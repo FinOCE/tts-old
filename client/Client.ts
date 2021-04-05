@@ -36,7 +36,7 @@ export default class Client extends EventEmitter {
             }
         }).then(res => res.json())
         .then(data => {
-            return new PostListing(data)
+            return new PostListing(data, 200)
         })
     }
 }
