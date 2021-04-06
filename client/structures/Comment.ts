@@ -19,6 +19,6 @@ export default class Comment {
         this.awards = awards
         this.createdAt = data.data.created_utc
         this.author = data.data.author
-        if (data.data.replies) this.replies = new CommentListing(data.data.replies)
+        if (data.data.replies) this.replies = new CommentListing(data.data.replies, 200)
     }
 }

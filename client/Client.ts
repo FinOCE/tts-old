@@ -43,14 +43,15 @@ export default class Client extends EventEmitter {
         })
     }
 
-    async getTopComments(post: Post): Promise<CommentListing> {
+    async getTopComments(post: Post): Promise<Post> {
         return await fetch('https://oauth.reddit.com' + post.relativeURL, {
             headers: {
                 'Authorization': `Bearer ${this.token}`
             }
         }).then(res => res.json())
         .then(data => {
-            return new CommentListing(data[1], 200)
+            post.comments = new CommentListing(data[1], 200)
+            return post
         })
     }
 }
