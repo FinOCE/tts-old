@@ -1,30 +1,24 @@
 import Award from './Award'
 import CommentListing from './Listings/CommentListing'
 
-export default class Post {
-    public subreddit: string
-    public title: string
+export default class Comment {
+    public body: string
     public upvotes: number
     public awards: Array<Award>
     public createdAt: number
     public author: string
-    public completeURL: string
-    public relativeURL: string
-    public comments?: CommentListing | number
+    public replies?: CommentListing
 
     constructor(data: Record<string, any>) {
         const awards = []
         data.data.all_awardings.forEach(award => {
             awards.push(new Award(award))
         })
-        this.subreddit = data.data.subreddit_name_prefixed
-        this.title = data.data.title
+        this.body = data.data.body
         this.upvotes = data.data.ups
         this.awards = awards
         this.createdAt = data.data.created_utc
         this.author = data.data.author
-        this.completeURL = data.data.url
-        this.relativeURL = data.data.permalink
-        this.comments = data.data.num_comments
+        if (data.data.replies) this.replies = new CommentListing(data.data.replies)
     }
 }

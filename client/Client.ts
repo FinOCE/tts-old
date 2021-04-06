@@ -2,7 +2,10 @@ import fetch from 'node-fetch'
 import {URLSearchParams} from 'url'
 import * as EventEmitter from 'events'
 
+import Post from './structures/Post'
 import PostListing from './structures/Listings/PostListing'
+import Comment from './structures/Comment'
+import CommentListing from './structures/Listings/CommentListing'
 
 export default class Client extends EventEmitter {
     private token: string
@@ -37,6 +40,17 @@ export default class Client extends EventEmitter {
         }).then(res => res.json())
         .then(data => {
             return new PostListing(data, 200)
+        })
+    }
+
+    async getTopComments(post: Post): Promise<CommentListing> {
+        return await fetch('https://oauth.reddit.com' + post.relativeURL, {
+            headers: {
+                'Authorization': `Bearer ${this.token}`
+            }
+        }).then(res => res.json())
+        .then(data => {
+            return new CommentListing(data[1], 200)
         })
     }
 }
