@@ -1,17 +1,18 @@
+import glob from 'glob'
+import {parse} from 'path'
 require('dotenv').config()
 
 import Client from './client/Client'
 const client = new Client()
 
-client.on('ready', async () => {
-    console.log('Reddit application is now online')
+glob('./events/*.ts', (err: Error | null, events: Array<string>) => {
+    if (err) throw err
+    events.filter(file => file !== './events/Event.ts').forEach(file => {
+        const {name} = parse(file)
 
-    const posts = await client.getTopPosts('askreddit')
-    posts.set(0, await client.getTopComments(posts.get(0)))
-})
-
-client.on('connection', async () => {
-    console.log('Web client has connected to the application')
+        const event = new (require(file).default)(client)
+        client.on(name, (...args) => event.run(...args))
+    })
 })
 
 client.login(process.env.client_id!, process.env.client_secret!)
