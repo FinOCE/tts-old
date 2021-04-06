@@ -18,4 +18,8 @@ export default class Listing {
     get(i: number) {
         return this.children[i]
     }
+
+    set(i: number, value: any) {
+        this.children[i] = value
+    }
 }

@@ -13,8 +13,8 @@ export default class Post {
     public comments?: CommentListing | number
 
     constructor(data: Record<string, any>) {
-        const awards = []
-        data.data.all_awardings.forEach(award => {
+        const awards: Array<Award> = []
+        data.data.all_awardings.forEach((award: Record<string, any>) => {
             awards.push(new Award(award))
         })
         this.subreddit = data.data.subreddit_name_prefixed

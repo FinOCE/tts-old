@@ -1,6 +1,6 @@
 import fetch from 'node-fetch'
 import {URLSearchParams} from 'url'
-import * as EventEmitter from 'events'
+import {EventEmitter} from 'events'
 
 import Post from './structures/Post'
 import PostListing from './structures/Listings/PostListing'
@@ -8,7 +8,7 @@ import Comment from './structures/Comment'
 import CommentListing from './structures/Listings/CommentListing'
 
 export default class Client extends EventEmitter {
-    private token: string
+    private token?: string
 
     constructor() {
         super()

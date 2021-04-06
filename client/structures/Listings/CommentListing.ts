@@ -6,7 +6,7 @@ export default class CommentListing extends Listing {
 
     constructor(data: Record<string, any>, minUpvotes: number = 0) {
         super(data)
-        this.children = data.data.children.filter(comment => comment.data.all_awardings).map((comment: Record<string, any>) => {return new Comment(comment)}).filter((comment: Comment) => comment.upvotes > minUpvotes)
+        this.children = data.data.children.filter((comment: Record<string, any>) => comment.data.all_awardings).map((comment: Record<string, any>) => {return new Comment(comment)}).filter((comment: Comment) => comment.upvotes > minUpvotes)
         this.length = this.children.length
     }
 }
