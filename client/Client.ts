@@ -2,6 +2,8 @@ import fetch from 'node-fetch'
 import {URLSearchParams} from 'url'
 import {EventEmitter} from 'events'
 
+import Server from '../website/Server'
+
 import Post from './structures/Post'
 import PostListing from './structures/Listings/PostListing'
 import Comment from './structures/Comment'
@@ -27,6 +29,9 @@ export default class Client extends EventEmitter {
         }).then(res => res.json()).then(token => {
             if (token.error) throw `Error ${token.error}: ${token.message}`
             this.token = token.access_token
+
+            Server(this)
+            
             this.emit('ready')
         }).catch(err => console.error(err))
     }
