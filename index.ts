@@ -10,8 +10,7 @@ client.on('ready', async () => {
     console.log('Reddit application is now online')
 
     const posts = await client.getTopPosts('askreddit')
-    const post = await client.getTopComments(posts.get(0))
-    fs.writeFileSync('./post.json', JSON.stringify(post, null, 4))
+    posts.set(0, await client.getTopComments(posts.get(0)))
 })
 
-client.login(process.env.client_id, process.env.client_secret)
+client.login(process.env.client_id!, process.env.client_secret!)
