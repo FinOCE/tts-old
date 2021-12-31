@@ -1,6 +1,5 @@
 import fetch from 'node-fetch'
 import { EventEmitter } from 'events'
-import Event from './Event'
 
 type PostTime = 'hour' | 'day' | 'week' | 'month' | 'year' | 'all'
 
