@@ -38,4 +38,15 @@ export default class Client extends EventEmitter {
   private async initializeEvents() {
     this.on('ready', () => new (require('../events/ready').default)(this).run())
   }
+
+  public async getPosts(subreddit: string, sort: string, duration: string) {
+    if (!this.token) throw 'Client must be logged in to use getPosts'
+
+    const results = await fetch(
+      `https://oauth.reddit.com/r/${subreddit}/${sort}?t=${duration}`,
+      { headers: { authorization: `Bearer ${this.token}` } }
+    ).then(res => res.json())
+
+    return results
+  }
 }

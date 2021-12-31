@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Client from '../models/Client'
 
 export default function Index() {
@@ -7,13 +7,30 @@ export default function Index() {
 
   const [isHot, setIsHot] = useState(false)
 
+  const subredditInput = useRef<HTMLSelectElement>(null)
+  const sortInput = useRef<HTMLSelectElement>(null)
+  const durationInput = useRef<HTMLSelectElement>(null)
+  const minCommentInput = useRef<HTMLInputElement>(null)
+  const minUpvoteInput = useRef<HTMLInputElement>(null)
+
   return (
-    <main>
+    <main
+      onSubmit={async e => {
+        e.preventDefault()
+        console.log(
+          await client.getPosts(
+            subredditInput.current!.value,
+            sortInput.current!.value,
+            durationInput.current!.value
+          )
+        )
+      }}
+    >
       <h1>Subreddit Search</h1>
       <form>
         <label htmlFor="subreddit">Select Subreddit</label>
         <br />
-        <select id="subreddit">
+        <select id="subreddit" ref={subredditInput}>
           <option value="askreddit">r/askreddit</option>
         </select>
         <br />
@@ -26,6 +43,7 @@ export default function Index() {
             if (e.target.value === '') setIsHot(true)
             else setIsHot(false)
           }}
+          ref={sortInput}
         >
           <option value="">Hot</option>
           <option value="top" selected>
@@ -38,7 +56,7 @@ export default function Index() {
         <br />
         <label htmlFor="duration">Past</label>
         <br />
-        <select id="duration" disabled={isHot}>
+        <select id="duration" disabled={isHot} ref={durationInput}>
           {isHot && <option value="" selected></option>}
           <option value="hour">Hour</option>
           <option value="day">Day</option>
@@ -53,12 +71,22 @@ export default function Index() {
         <br />
         <label htmlFor="minPostUpvotes">Minimum Post Comments</label>
         <br />
-        <input id="minPostComments" type="number" defaultValue="200" />
+        <input
+          id="minPostComments"
+          type="number"
+          defaultValue="200"
+          ref={minCommentInput}
+        />
         <br />
         <br />
         <label htmlFor="minCommentUpvotes">Minimum Comment Upvotes</label>
         <br />
-        <input id="minCommentUpvotes" type="number" defaultValue="200" />
+        <input
+          id="minCommentUpvotes"
+          type="number"
+          defaultValue="200"
+          ref={minUpvoteInput}
+        />
         <br />
         <br />
         <input type="submit" value="Search" />{' '}
