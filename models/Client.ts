@@ -2,8 +2,7 @@ import fetch from 'node-fetch'
 import { EventEmitter } from 'events'
 import Listing from './Listing'
 import Post, { PostData } from './Post'
-
-type PostTime = 'hour' | 'day' | 'week' | 'month' | 'year' | 'all'
+import { PostTime } from './Post'
 
 export default class Client extends EventEmitter {
   private token?: string
@@ -41,13 +40,15 @@ export default class Client extends EventEmitter {
     this.on('ready', () => new (require('../events/ready').default)(this).run())
   }
 
-  public async getPosts(subreddit: string, sort: string, duration: string) {
+  public async getPosts(subreddit: string, sort: string, duration: PostTime) {
     if (!this.token) throw 'Client must be logged in to use getPosts'
 
     const result = await fetch(
       `https://oauth.reddit.com/r/${subreddit}/${sort}?t=${duration}`,
       { headers: { authorization: `Bearer ${this.token}` } }
     ).then(res => res.json())
+
+    console.log(result)
 
     return new Listing<PostData, Post>(result, Post).entries
   }

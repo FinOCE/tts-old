@@ -1,8 +1,10 @@
-type Award = unknown // TEMPORARY
+import Award, { AwardData } from './Award'
+
+export type PostTime = 'hour' | 'day' | 'week' | 'month' | 'year' | 'all'
 
 // MANY TYPES MAY BE INACCURATE OR MISSING
 export interface PostData {
-  all_awardings: Award[]
+  all_awardings: AwardData[]
   allow_live_comments: boolean
   approved_at_utc: number | null
   approved_by: string | null
@@ -60,7 +62,7 @@ export interface PostData {
   link_flair_type: 'text'
   locked: boolean
   media: null
-  media_embed: {}
+  media_embed: unknown
   media_only: boolean
   mod_note: null
   mod_reason_by: null
@@ -88,7 +90,7 @@ export interface PostData {
         height: number
         width: number
       }
-      variants: {}
+      variants: unknown
     }[]
   }
   pwls: number
@@ -100,7 +102,7 @@ export interface PostData {
   saved: boolean
   score: number
   secure_media: null
-  secure_media_embed: {}
+  secure_media_embed: unknown
   selftext: string
   selftext_html: null
   send_replies: boolean
@@ -142,6 +144,7 @@ export default class Post {
     total: number
     ratio: number
   }
+  public awards: Award[]
 
   public constructor(post: PostData) {
     this.title = post.title
@@ -157,5 +160,6 @@ export default class Post {
       total: post.score,
       ratio: post.upvote_ratio
     }
+    this.awards = post.all_awardings.map(a => new Award(a))
   }
 }

@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import Client from '../models/Client'
+import { PostTime } from '../models/Post'
 
 export default function Index() {
   const client = new Client()
@@ -21,7 +22,7 @@ export default function Index() {
           await client.getPosts(
             subredditInput.current!.value,
             sortInput.current!.value,
-            durationInput.current!.value
+            durationInput.current!.value as PostTime
           )
         )
       }}
@@ -32,6 +33,7 @@ export default function Index() {
         <br />
         <select id="subreddit" ref={subredditInput}>
           <option value="askreddit">r/askreddit</option>
+          <option value="memes">r/memes</option>
         </select>
         <br />
         <br />
