@@ -138,7 +138,7 @@ export default class Post {
   public stickied: boolean
   public comments: number
   public subreddit: string
-  public url: string
+  public permalink: string
   public karma: {
     upvotes: number
     downvotes: number
@@ -147,21 +147,21 @@ export default class Post {
   }
   public awards: Award[]
 
-  public constructor(post: PostData) {
-    this.title = post.title
-    this.author = post.author
-    this.timestamp = post.created_utc
-    this.nsfw = post.over_18
-    this.stickied = post.stickied
-    this.comments = post.num_comments
-    this.subreddit = post.subreddit
-    this.url = `https://reddit.com${post.permalink}`
+  public constructor(data: PostData) {
+    this.title = data.title
+    this.author = data.author
+    this.timestamp = data.created_utc
+    this.nsfw = data.over_18
+    this.stickied = data.stickied
+    this.comments = data.num_comments
+    this.subreddit = data.subreddit
+    this.permalink = data.permalink
     this.karma = {
-      upvotes: Math.round(post.ups / post.upvote_ratio),
-      downvotes: Math.round(post.ups / post.upvote_ratio - post.ups),
-      total: post.score,
-      ratio: post.upvote_ratio
+      upvotes: Math.round(data.ups / data.upvote_ratio),
+      downvotes: Math.round(data.ups / data.upvote_ratio - data.ups),
+      total: data.score,
+      ratio: data.upvote_ratio
     }
-    this.awards = post.all_awardings.map(a => new Award(a))
+    this.awards = data.all_awardings.map(a => new Award(a))
   }
 }

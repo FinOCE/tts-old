@@ -1,6 +1,9 @@
 import { useRef, useState } from 'react'
 import Client from '../models/Client'
+import Comment from '../models/Comment'
 import Post, { PostTime } from '../models/Post'
+import PostComponent from '../components/PostComponent'
+import CommentComponent from '../components/CommentComponent'
 
 export default function Index() {
   const client = new Client()
@@ -16,6 +19,7 @@ export default function Index() {
   const minUpvoteInput = useRef<HTMLInputElement>(null)
 
   const [posts, setPosts] = useState<Post[]>([])
+  const [comments, setComments] = useState<Comment[]>([])
   const [loading, setLoading] = useState(false)
 
   return (
@@ -32,6 +36,7 @@ export default function Index() {
               durationInput.current!.value as PostTime
             )
           )
+          setComments([])
           setLoading(false)
         }}
       >
@@ -115,24 +120,38 @@ export default function Index() {
             <br />
             <p>Loading...</p>
           </>
+        ) : comments.length > 0 ? (
+          <>
+            <br />
+            <br />
+            <input
+              type="button"
+              value="Return to posts"
+              onClick={() => setComments([])}
+            />
+            {comments.map(comment => (
+              <CommentComponent key={comment.body} comment={comment} />
+            ))}
+          </>
         ) : (
           posts.map(post => (
             <>
               <br />
               <br />
-              <div key={post.title}>
-                <a href={post.url}>{post.title}</a>
-                <p>
-                  Posted by <b>{post.author}</b>
-                </p>
-                <p>
-                  <b>{post.comments}</b> Comments
-                </p>
-                <p>
-                  <b>{post.karma.total}</b> Upvotes{' '}
-                  <b>({Math.round(post.karma.ratio * 100)}%)</b>
-                </p>
-              </div>
+              <input
+                type="button"
+                value="Clear posts"
+                onClick={() => setPosts([])}
+              />
+              <PostComponent
+                key={post.title}
+                post={post}
+                showComments={async () => {
+                  setLoading(true)
+                  setComments(await client.getComments(post))
+                  setLoading(false)
+                }}
+              />
             </>
           ))
         )}

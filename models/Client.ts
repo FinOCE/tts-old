@@ -3,6 +3,7 @@ import { EventEmitter } from 'events'
 import Listing from './Listing'
 import Post, { PostData } from './Post'
 import { PostTime } from './Post'
+import Comment, { CommentData } from './Comment'
 
 export default class Client extends EventEmitter {
   private token?: string
@@ -53,5 +54,13 @@ export default class Client extends EventEmitter {
     return new Listing<PostData, Post>(result, Post).entries.filter(
       p => !p.stickied
     )
+  }
+
+  public async getComments(post: Post) {
+    const result = await fetch(`https://oauth.reddit.com${post.permalink}`, {
+      headers: { authorization: `Bearer ${this.token}` }
+    }).then(res => res.json())
+
+    return new Listing<CommentData, Comment>(result[1], Comment).entries
   }
 }

@@ -19,6 +19,14 @@ export default class Listing<T1, T2> {
   public entries: T2[]
 
   public constructor(listing: ListingData<T1>, constructor: new (c: T1) => T2) {
-    this.entries = listing.data.children.map(c => new constructor(c.data))
+    this.entries = listing.data.children
+      .map(c => {
+        try {
+          return new constructor(c.data)
+        } catch (err) {
+          return null
+        }
+      })
+      .filter(v => v !== null) as T2[]
   }
 }
