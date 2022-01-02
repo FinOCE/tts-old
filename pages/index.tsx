@@ -134,15 +134,15 @@ export default function Index() {
             ))}
           </>
         ) : (
-          posts.map(post => (
-            <>
-              <br />
-              <br />
-              <input
-                type="button"
-                value="Clear posts"
-                onClick={() => setPosts([])}
-              />
+          <>
+            <br />
+            <br />
+            <input
+              type="button"
+              value="Clear posts"
+              onClick={() => setPosts([])}
+            />
+            {posts.map(post => (
               <PostComponent
                 key={post.title}
                 post={post}
@@ -152,8 +152,8 @@ export default function Index() {
                   setLoading(false)
                 }}
               />
-            </>
-          ))
+            ))}
+          </>
         )}
       </div>
     </main>
