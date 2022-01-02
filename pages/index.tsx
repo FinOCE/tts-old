@@ -1,12 +1,13 @@
 import { useRef, useState } from 'react'
 import Client from '../models/Client'
-import { PostTime } from '../models/Post'
+import Post, { PostTime } from '../models/Post'
 
 export default function Index() {
   const client = new Client()
   client.login(process.env.clientId, process.env.clientSecret)
 
-  const [isHot, setIsHot] = useState(false)
+  const [isHot, setIsHot] = useState(true)
+  const [isFiltered, setIsFiltered] = useState(false)
 
   const subredditInput = useRef<HTMLSelectElement>(null)
   const sortInput = useRef<HTMLSelectElement>(null)
@@ -14,21 +15,26 @@ export default function Index() {
   const minCommentInput = useRef<HTMLInputElement>(null)
   const minUpvoteInput = useRef<HTMLInputElement>(null)
 
+  const [posts, setPosts] = useState<Post[]>([])
+  const [loading, setLoading] = useState(false)
+
   return (
-    <main
-      onSubmit={async e => {
-        e.preventDefault()
-        console.log(
-          await client.getPosts(
-            subredditInput.current!.value,
-            sortInput.current!.value,
-            durationInput.current!.value as PostTime
-          )
-        )
-      }}
-    >
+    <main>
       <h1>Subreddit Search</h1>
-      <form>
+      <form
+        onSubmit={async e => {
+          e.preventDefault()
+          setLoading(true)
+          setPosts(
+            await client.getPosts(
+              subredditInput.current!.value,
+              sortInput.current!.value,
+              durationInput.current!.value as PostTime
+            )
+          )
+          setLoading(false)
+        }}
+      >
         <label htmlFor="subreddit">Select Subreddit</label>
         <br />
         <select id="subreddit" ref={subredditInput}>
@@ -47,10 +53,10 @@ export default function Index() {
           }}
           ref={sortInput}
         >
-          <option value="">Hot</option>
-          <option value="top" selected>
-            Top
+          <option value="" selected>
+            Hot
           </option>
+          <option value="top">Top</option>
           <option value="new">New</option>
           <option value="rising">Rising</option>
         </select>
@@ -62,13 +68,19 @@ export default function Index() {
           {isHot && <option value="" selected></option>}
           <option value="hour">Hour</option>
           <option value="day">Day</option>
-          <option value="week" selected>
-            Week
-          </option>
+          <option value="week">Week</option>
           <option value="month">Month</option>
           <option value="year">Year</option>
           <option value="all">All Time</option>
         </select>
+        <br />
+        <br />
+        <input
+          type="checkbox"
+          name="filters"
+          onChange={() => setIsFiltered(!isFiltered)}
+        />
+        <label htmlFor="filters">Use filters</label>
         <br />
         <br />
         <label htmlFor="minPostUpvotes">Minimum Post Comments</label>
@@ -78,6 +90,7 @@ export default function Index() {
           type="number"
           defaultValue="200"
           ref={minCommentInput}
+          disabled={!isFiltered}
         />
         <br />
         <br />
@@ -88,12 +101,42 @@ export default function Index() {
           type="number"
           defaultValue="200"
           ref={minUpvoteInput}
+          disabled={!isFiltered}
         />
         <br />
         <br />
         <input type="submit" value="Search" />{' '}
-        <input type="reset" value="Reset" onClick={() => setIsHot(false)} />
+        <input type="reset" value="Reset" onClick={() => setIsHot(true)} />
       </form>
+
+      <div>
+        {loading ? (
+          <>
+            <br />
+            <p>Loading...</p>
+          </>
+        ) : (
+          posts.map(post => (
+            <>
+              <br />
+              <br />
+              <div key={post.title}>
+                <a href={post.url}>{post.title}</a>
+                <p>
+                  Posted by <b>{post.author}</b>
+                </p>
+                <p>
+                  <b>{post.comments}</b> Comments
+                </p>
+                <p>
+                  <b>{post.karma.total}</b> Upvotes{' '}
+                  <b>({Math.round(post.karma.ratio * 100)}%)</b>
+                </p>
+              </div>
+            </>
+          ))
+        )}
+      </div>
     </main>
   )
 }

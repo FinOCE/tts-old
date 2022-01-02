@@ -50,6 +50,8 @@ export default class Client extends EventEmitter {
 
     console.log(result)
 
-    return new Listing<PostData, Post>(result, Post).entries
+    return new Listing<PostData, Post>(result, Post).entries.filter(
+      p => !p.stickied
+    )
   }
 }

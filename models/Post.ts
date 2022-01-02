@@ -135,6 +135,7 @@ export default class Post {
   public author: string
   public timestamp: number
   public nsfw: boolean
+  public stickied: boolean
   public comments: number
   public subreddit: string
   public url: string
@@ -151,6 +152,7 @@ export default class Post {
     this.author = post.author
     this.timestamp = post.created_utc
     this.nsfw = post.over_18
+    this.stickied = post.stickied
     this.comments = post.num_comments
     this.subreddit = post.subreddit
     this.url = `https://reddit.com${post.permalink}`
