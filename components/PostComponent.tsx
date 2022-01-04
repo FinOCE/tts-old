@@ -3,6 +3,7 @@ import Post from '../models/Post'
 interface PostProps {
   post: Post
   showComments: () => Promise<void>
+  present: () => Promise<void>
 }
 
 export default function PostComponent(props: PostProps) {
@@ -28,7 +29,8 @@ export default function PostComponent(props: PostProps) {
           type="button"
           value="Show Comments"
           onClick={props.showComments}
-        />
+        />{' '}
+        <input type="button" value="Present" onClick={props.present} />
       </div>
     </>
   )

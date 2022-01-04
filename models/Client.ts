@@ -38,7 +38,9 @@ export default class Client extends EventEmitter {
   }
 
   private async initializeEvents() {
-    this.on('ready', () => new (require('../events/ready').default)(this).run())
+    this.once('ready', () =>
+      new (require('../events/ready').default)(this).run()
+    )
   }
 
   public async getPosts(subreddit: string, sort: string, duration: PostTime) {
@@ -49,11 +51,7 @@ export default class Client extends EventEmitter {
       { headers: { authorization: `Bearer ${this.token}` } }
     ).then(res => res.json())
 
-    console.log(result)
-
-    return new Listing<PostData, Post>(result, Post).entries.filter(
-      p => !p.stickied
-    )
+    return new Listing<PostData, Post>(result, Post).entries
   }
 
   public async getComments(post: Post) {

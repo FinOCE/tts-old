@@ -25,6 +25,7 @@ module.exports = {
     'no-undef': 0,
     'no-param-reassign': 2,
     '@typescript-eslint/no-var-requires': 0,
-    '@typescript-eslint/no-non-null-assertion': 0
+    '@typescript-eslint/no-non-null-assertion': 0,
+    '@typescript-eslint/no-extra-semi': 0
   }
 }
