@@ -2,8 +2,8 @@ import Post from '../models/Post'
 
 interface PostProps {
   post: Post
-  showComments: () => Promise<void>
-  present: () => Promise<void>
+  showComments?: () => Promise<void>
+  present?: () => Promise<void>
 }
 
 export default function PostComponent(props: PostProps) {

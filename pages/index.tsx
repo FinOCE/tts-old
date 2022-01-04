@@ -1,9 +1,14 @@
-import { useRef, useState } from 'react'
+import { DetailedHTMLProps, HTMLAttributes, useRef, useState } from 'react'
 import Client from '../models/Client'
 import Comment from '../models/Comment'
 import Post, { PostTime } from '../models/Post'
 import PostComponent from '../components/PostComponent'
 import CommentComponent from '../components/CommentComponent'
+
+type HTMLMainElement = DetailedHTMLProps<
+  HTMLAttributes<HTMLElement>,
+  HTMLElement
+>
 
 export default function Index() {
   const [client] = useState(new Client())
@@ -21,18 +26,26 @@ export default function Index() {
   const [posts, setPosts] = useState<Post[]>([])
   const [comments, setComments] = useState<Comment[]>([])
   const [loading, setLoading] = useState(false)
-  const [presenting, setPresenting] = useState(false)
+
+  const [view, setView] = useState<HTMLMainElement>()
+  if (typeof window !== 'undefined') window.speechSynthesis.cancel()
 
   async function present(post: Post) {
-    window.speechSynthesis.speak(new SpeechSynthesisUtterance('This is a test'))
-    setPresenting(true)
-    const comments = await client.getComments(post)
+    let comments = await client.getComments(post)
 
+    // Limit comments to 3 subcomments with no further
+    comments = comments.map(c => {
+      c.comments = c.comments.splice(0, 3)
+      c.comments.forEach(c2 => (c2.comments = []))
+      return c
+    })
+
+    // Get voice
     const preferredVoice =
       'Microsoft Natasha Online (Natural) - English (Australia)'
     const synth = window.speechSynthesis
 
-    new Promise<SpeechSynthesisVoice>(resolve => {
+    const voice = await new Promise<SpeechSynthesisVoice>(resolve => {
       const fetchVoices = setInterval(() => {
         if (
           synth.getVoices().some(voice => voice.voiceURI === preferredVoice)
@@ -44,37 +57,59 @@ export default function Index() {
           resolve(voice)
         }
       }, 50)
-    }).then(voice => {
-      const speakQueue = [post.title]
-
-      // Recursively add comments to queue
-      ;(function addToQueue(comments: Comment[]) {
-        for (const comment of comments) {
-          speakQueue.push(comment.body)
-          if (comment.comments.length > 0) addToQueue(comment.comments)
-        }
-      })(comments)
-
-      // Speak all in queue
-      ;(function speak() {
-        const utterance = new SpeechSynthesisUtterance(speakQueue[0])
-        utterance.voice = voice
-        utterance.onend = () => {
-          speakQueue.shift()
-          if (speakQueue.length > 0) speak()
-          else setPresenting(false)
-        }
-
-        console.log(speakQueue[0])
-        synth.speak(utterance)
-      })()
     })
+
+    // Show post
+    setView(
+      <main>
+        <PostComponent post={post} />
+      </main>
+    )
+    await new Promise(resolve => {
+      const utterance = new SpeechSynthesisUtterance(post.title)
+      utterance.voice = voice
+      utterance.onend = () => resolve(true)
+      synth.speak(utterance)
+    })
+
+    // Show comments
+    for (const comment of comments) {
+      setView(
+        <main>
+          <CommentComponent comment={comment} subcomments={0} />
+        </main>
+      )
+
+      await new Promise(resolve => {
+        const utterance = new SpeechSynthesisUtterance(comment.body)
+        utterance.voice = voice
+        utterance.onend = () => resolve(true)
+        synth.speak(utterance)
+      })
+
+      for (let i = 0; i < comment.comments.length; i++) {
+        const subcomment = comment.comments[i]
+
+        setView(
+          <main>
+            <CommentComponent comment={comment} subcomments={i + 1} />
+          </main>
+        )
+
+        await new Promise(resolve => {
+          const utterance = new SpeechSynthesisUtterance(subcomment.body)
+          utterance.voice = voice
+          utterance.onend = () => resolve(true)
+          synth.speak(utterance)
+        })
+      }
+    }
   }
 
   return (
     <>
-      {presenting ? (
-        <></>
+      {view ? (
+        view
       ) : (
         <main>
           <h1>Subreddit Search</h1>

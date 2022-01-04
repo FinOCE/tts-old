@@ -2,6 +2,7 @@ import Comment from '../models/Comment'
 
 interface PostProps {
   comment: Comment
+  subcomments?: number
 }
 
 export default function CommentComponent(props: PostProps) {
@@ -18,7 +19,7 @@ export default function CommentComponent(props: PostProps) {
           <b>{props.comment.upvotes}</b> Upvotes
         </p>
         <div style={{ marginLeft: '20px' }}>
-          {props.comment.comments.map(comment => (
+          {props.comment.comments.slice(0, props.subcomments).map(comment => (
             <CommentComponent key={comment.body} comment={comment} />
           ))}
         </div>
