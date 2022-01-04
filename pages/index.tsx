@@ -4,6 +4,8 @@ import Comment from '../models/Comment'
 import Post, { PostTime } from '../models/Post'
 import PostComponent from '../components/PostComponent'
 import CommentComponent from '../components/CommentComponent'
+import ViewPost from '../components/ViewPost'
+import ViewComment from '../components/ViewComment'
 
 type HTMLMainElement = DetailedHTMLProps<
   HTMLAttributes<HTMLElement>,
@@ -62,7 +64,7 @@ export default function Index() {
     // Show post
     setView(
       <main>
-        <PostComponent post={post} />
+        <ViewPost {...post} />
       </main>
     )
     await new Promise(resolve => {
@@ -76,7 +78,7 @@ export default function Index() {
     for (const comment of comments) {
       setView(
         <main>
-          <CommentComponent comment={comment} subcomments={0} />
+          <ViewComment {...comment} subcomments={0} />
         </main>
       )
 
@@ -92,7 +94,7 @@ export default function Index() {
 
         setView(
           <main>
-            <CommentComponent comment={comment} subcomments={i + 1} />
+            <ViewComment {...comment} subcomments={i + 1} />
           </main>
         )
 
