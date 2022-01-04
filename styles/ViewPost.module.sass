@@ -1,0 +1,90 @@
+.banner
+  position: absolute
+  top: 0
+  left: 0
+  text-align: center
+  margin: 30px 10vw 0 10vw
+  font-size: 30px
+  font-weight: bold
+  width: 80vw
+  animation: fadeIn 1s ease
+
+  @keyframes fadeIn
+    0%
+      opacity: 0
+    100%
+      opacity: 1
+
+  span
+    color: #3E77D1
+
+.post
+  margin: 20px 0
+  display: grid
+  grid-template-areas: 'sidebar header' 'sidebar body' 'sidebar footer' 'sidebar ratio'
+  animation: fadeIn 1s ease
+  overflow: hidden
+
+  @keyframes fadeIn
+    0%
+      opacity: 0
+    100%
+      opacity: 1
+
+  .sidebar
+    grid-area: sidebar
+    margin-right: 1em
+    margin-top: 9px
+    max-width: 3.5em
+    font-weight: bold
+    display: inline-flex
+    align-items: center
+    justify-content: center
+    flex-direction: column
+    gap: 5px
+    font-size: 0.8em
+
+    svg
+      position: relative
+      top: 2px
+
+      &:first-of-type
+        color: #C98744
+
+      &:last-of-type
+        color: #3E77D1
+
+  .header
+    grid-area: header
+    color: #bbbbbb
+    font-size: 0.8em
+    display: flex
+    flex-direction: row
+    gap: 5px
+    margin-bottom: 1em
+    margin-top: 7px
+
+    .subreddit
+      font-weight: bold
+
+  .body
+    grid-area: body
+    font-size: 1.5em
+    font-weight: bold
+
+  .footer
+    grid-area: footer
+    color: #bbbbbb
+    font-size: 0.8em
+    display: flex
+    flex-direction: row
+    gap: 5px
+    margin-top: 1em
+    position: relative
+
+    .comments
+      font-weight: bold
+
+    .ratio
+      position: absolute
+      right: 0

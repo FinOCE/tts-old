@@ -79,7 +79,10 @@ export default function Index() {
     for (const comment of comments) {
       setView(
         <ViewBase>
-          <ViewComment {...comment} subcomments={0} />
+          <>
+            <ViewPost {...post} isBanner={true} />
+            <ViewComment {...comment} subcomments={0} />
+          </>
         </ViewBase>
       )
 
@@ -95,7 +98,10 @@ export default function Index() {
 
         setView(
           <ViewBase>
-            <ViewComment {...comment} subcomments={i + 1} />
+            <>
+              <ViewPost {...post} isBanner={true} />
+              <ViewComment {...comment} subcomments={i + 1} />
+            </>
           </ViewBase>
         )
 
@@ -107,6 +113,9 @@ export default function Index() {
         })
       }
     }
+
+    // Exit
+    setView(undefined)
   }
 
   return (

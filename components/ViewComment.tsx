@@ -1,15 +1,15 @@
 import moment from 'moment'
 import millify from 'millify'
 import Comment from '../models/Comment'
-import styles from '../styles/ViewComment.module.sass'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faChevronCircleDown,
   faChevronCircleUp
 } from '@fortawesome/free-solid-svg-icons'
+import styles from '../styles/ViewComment.module.sass'
 
 export default function ViewComment(
-  props: Comment & { subcomments: number; className?: string }
+  props: Comment & { subcomments: number; isSubcomment?: boolean }
 ) {
   const timestamp = moment
     .duration(props.timestamp - Date.now() / 1000, 'seconds')
@@ -19,7 +19,7 @@ export default function ViewComment(
     <div
       className={[
         styles.comment,
-        props.className ? styles.subcomment : ''
+        props.isSubcomment ? styles.subcomment : ''
       ].join(' ')}
       key={props.body.slice(0, 15)}
     >
@@ -44,7 +44,7 @@ export default function ViewComment(
       <div className={styles.comments}>
         {props.comments.slice(0, props.subcomments).map(comment => (
           <ViewComment
-            className={styles.subcomment}
+            isSubcomment={true}
             key={comment.body}
             {...comment}
             subcomments={0}
