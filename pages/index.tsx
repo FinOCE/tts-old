@@ -4,6 +4,7 @@ import Comment from '../models/Comment'
 import Post, { PostTime } from '../models/Post'
 import PostComponent from '../components/PostComponent'
 import CommentComponent from '../components/CommentComponent'
+import ViewBase from '../components/ViewBase'
 import ViewPost from '../components/ViewPost'
 import ViewComment from '../components/ViewComment'
 
@@ -63,9 +64,9 @@ export default function Index() {
 
     // Show post
     setView(
-      <main>
+      <ViewBase>
         <ViewPost {...post} />
-      </main>
+      </ViewBase>
     )
     await new Promise(resolve => {
       const utterance = new SpeechSynthesisUtterance(post.title)
@@ -77,9 +78,9 @@ export default function Index() {
     // Show comments
     for (const comment of comments) {
       setView(
-        <main>
+        <ViewBase>
           <ViewComment {...comment} subcomments={0} />
-        </main>
+        </ViewBase>
       )
 
       await new Promise(resolve => {
@@ -93,9 +94,9 @@ export default function Index() {
         const subcomment = comment.comments[i]
 
         setView(
-          <main>
+          <ViewBase>
             <ViewComment {...comment} subcomments={i + 1} />
-          </main>
+          </ViewBase>
         )
 
         await new Promise(resolve => {
