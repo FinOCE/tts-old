@@ -42,3 +42,4 @@ next.config.js
 # next.config.js is hidden since it contains env vars
 
 *.mp4
+*.mp3
